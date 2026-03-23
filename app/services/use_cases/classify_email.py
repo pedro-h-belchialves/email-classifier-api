@@ -1,4 +1,5 @@
 from app.services.ai.factory import get_ai_provider
+from app.utils.json_parser import extract_json
 
 
 class ClassifyEmailUseCase:
@@ -14,7 +15,7 @@ class ClassifyEmailUseCase:
         Email:
         {content}
 
-        Responda no formato JSON:
+        Responda apenas em JSON válido:
         {{
             "category": "produtivo ou improdutivo",
             "suggested_response": "resposta aqui"
@@ -23,4 +24,6 @@ class ClassifyEmailUseCase:
 
         response = self.ai_provider.generate(prompt)
 
-        return response
+        parsed = extract_json(response)
+
+        return parsed
