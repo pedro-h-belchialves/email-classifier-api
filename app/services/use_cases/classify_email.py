@@ -1,14 +1,28 @@
 from app.services.ai.factory import get_ai_provider
 from app.utils.json_parser import extract_json
 from app.schemas.email_schema import EmailResponse
+from app.services.ai.training_data import EXAMPLES
 
 
 class ClassifyEmailUseCase:
 
     def __init__(self):
         self.ai_provider = get_ai_provider()
+        
 
     def execute(self, content: str):
+        examples_text = ""
+
+        for example in EXAMPLES:
+            examples_text += f"""
+        Email: {example["email"]}
+        Resposta:
+        {{
+        "category": "{example["category"]}",
+        "suggested_response": "{example["response"]}"
+        }}
+        """
+    
         prompt = f"""
         Você é um assistente especializado em classificação de emails.
 
@@ -18,26 +32,7 @@ class ClassifyEmailUseCase:
 
         Exemplos:
 
-        Email: "Obrigado pela ajuda!"
-        Resposta:
-        {{
-        "category": "improdutivo",
-        "suggested_response": "Agradecemos sua mensagem! Ficamos à disposição."
-        }}
-
-        Email: "Preciso de suporte com meu pedido"
-        Resposta:
-        {{
-        "category": "produtivo",
-        "suggested_response": "Recebemos sua solicitação e iremos analisá-la o mais breve possível."
-        }}
-
-        Email: "Só passando para avisar que deu tudo certo"
-        Resposta:
-        {{
-        "category": "improdutivo",
-        "suggested_response": "Ficamos felizes em saber! Qualquer coisa, estamos à disposição."
-        }}
+        {examples_text}
 
         Agora classifique o seguinte email:
 
@@ -58,3 +53,5 @@ class ClassifyEmailUseCase:
         validated = EmailResponse(**parsed)
 
         return validated
+    
+ 
