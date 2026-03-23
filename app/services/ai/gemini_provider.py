@@ -1,4 +1,4 @@
-import google.generativeai as genai
+import google.genai as genai
 from app.services.ai.base_provider import AIProvider
 from app.config import GEMINI_API_KEY
 
