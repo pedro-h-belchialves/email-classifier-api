@@ -4,7 +4,7 @@ import tempfile
 from app.schemas.email_schema import EmailRequest, EmailResponse
 from app.services.use_cases import ClassifyEmailUseCase
 from app.utils.logger import get_logger
-from app.services.parsers.pdf_parser import PDFParser
+from app.services.parsers.file_parser import FileParser
 
 logger = get_logger(__name__)
 
@@ -34,8 +34,8 @@ async def classify_email(file: UploadFile = File(...)):
                 temp.write(await file.read())
                 temp_path = temp.name
 
-        parser = PDFParser()
-        text = parser.parse(temp_path)
+        parser = FileParser()
+        text = parser.parse(temp_path, file.filename)
 
         result = use_case.execute(text)
 
